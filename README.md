@@ -61,7 +61,6 @@ The Automator is the culmination of this learning journey where I'll be getting 
 - [x] File upload functionality  
 - [x] Data Summary / Descriptive Statistics
 - [ ] NULL Value Handling
-- [ ]   
 - [ ] Integrate machine learning models  
 - [ ] Enhance frontend with interactive elements  
 
