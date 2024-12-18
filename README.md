@@ -57,15 +57,6 @@ The Automator is the culmination of this learning journey where I'll be getting 
 
 ---
 
-### **To-Do List**  
-- [x] File upload functionality  
-- [x] Data Summary / Descriptive Statistics
-- [ ] NULL Value Handling
-- [ ] Integrate machine learning models  
-- [ ] Enhance frontend with interactive elements  
-
----
-
 ### **Future Scope**  
 I plan to scale The Automator to include features like real-time data analysis, interactive dashboards, and support for multiple file formats. The ultimate goal is to make data analysis accessible to everyone, regardless of their technical expertise.
 
