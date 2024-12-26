@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, jsonify, render_template
 import pandas as pd
+from modules.EDA import clean, summarize, descriptive_stats
 
 app = Flask(__name__)
 
@@ -38,35 +39,44 @@ def upload_file():
 
         # Check if the file has the correct extension
         if file and allowed_file(file.filename):
+            print(f"File: {file}, File.Filename{file.filename}")
             filename = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
             file.save(filename)
-            return (
-                f"""printmessage: file uploaded successfully: {filename}
-                  File Analysis : {process_File(filename)}""",
-                200,
-            )
+            return render_template("file_uploaded.html", filename=filename)
+
         else:
             return "Invalid file type. Only CSV files are allowed", 400
 
     # For GET request, display the file upload form
-    return """
-    <!doctype html>
-    <title>Upload a CSV File</title>
-    <h1>Upload a CSV File</h1>
-    <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="file">
-        <input type="submit" value="Upload">
-    </form>
-    """
+    return render_template("upload_file.html")
 
 
-# @app.route("/process", methods=["GET"])
-def process_File(filename):
+@app.route("/process", methods=["GET"])
+def process_file():
+    filename = request.args.get("filename")
+    if not filename:
+        return "No filename provided", 400
     file_path = os.path.join(filename)
-    df = pd.read_csv(file_path)
 
-    summary = df.describe().to_html(classes="table table-striped")
-    return render_template("analysis.html", table=summary)
+    try:
+
+        df = pd.read_csv(file_path)
+        summary = summarize(df)
+        # print("Null vals in uncleaned data: ", df.isnull().sum())
+        # Cleaning the DataFrame
+        cleaned_df = clean(df)
+        # print("Null vals in clean data: ", cleaned_df.isnull().sum())
+
+        dstats = descriptive_stats(cleaned_df)
+        print(dstats.central_tendency())
+        return render_template(
+            "analysis.html",
+            table=summary,
+            cleaned_table=cleaned_df.head().to_html(classes="table table-striped"),
+        )
+
+    except Exception as e:
+        return f"An error occurred: {str(e)}", 500
 
 
 if __name__ == "__main__":
