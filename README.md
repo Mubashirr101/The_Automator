@@ -38,7 +38,7 @@ The Automator is the culmination of this learning journey where I'll be getting 
 ### **Setup Instructions**  
 1. Clone this repository:  
    ```bash
-   git clone <repo-url>
+   git clone https://github.com/Mubashirr101/The_Automator
    cd The-Automator
    ```
 
