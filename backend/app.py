@@ -13,6 +13,25 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["ALLOWED_EXTENSIONS"] = {"csv"}
 
 
+def convert_dict_dtypes(stats_dict):
+    """Convert all values in the statistics dictionary to strings."""
+    if isinstance(stats_dict, dict):
+        for key, value in stats_dict.items():
+            if isinstance(value, dict):
+                # Recursively convert nested dictionaries
+                stats_dict[key] = convert_dict_dtypes(value)
+            elif isinstance(stats_dict, (tuple, list)):
+                # If the object is a tuple or list, convert all items to string
+                stats_dict[key] = [str(item) for item in stats_dict]
+            else:
+                # Convert the value to a string
+                stats_dict[key] = str(value)
+    else:
+        return "Not a Dictionary"
+
+    return stats_dict
+
+
 def allowed_file(filename):
     return (
         "." in filename
@@ -68,16 +87,23 @@ def process_file():
         # print("Null vals in clean data: ", cleaned_df.isnull().sum())
 
         dstats = descriptive_stats(cleaned_df)
-        print(dstats.central_tendency())
-        return render_template(
-            "analysis.html",
-            table=summary,
-            cleaned_table=cleaned_df.head().to_html(classes="table table-striped"),
-        )
+        ct = convert_dict_dtypes(dstats.central_tendency())
+        var = convert_dict_dtypes(dstats.variability())
+        dist = convert_dict_dtypes(dstats.distribution())
+        # print(dstats.central_tendency())
+        # print(dstats.variability())
+        # print(dstats.distribution())
+        # return render_template(
+        #     "analysis.html",
+        #     table=summary,
+        #     cleaned_table=cleaned_df.head().to_html(classes="table table-striped"),
+        # )
+        return jsonify(ct, var, dist)
 
     except Exception as e:
         return f"An error occurred: {str(e)}", 500
 
 
 if __name__ == "__main__":
+
     app.run(debug=True)
