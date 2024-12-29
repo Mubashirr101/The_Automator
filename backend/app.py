@@ -14,22 +14,25 @@ app.config["ALLOWED_EXTENSIONS"] = {"csv"}
 
 
 def convert_dict_dtypes(stats_dict):
-    """Convert all values in the statistics dictionary to strings."""
+    """Convert all keys and values in the dictionary to strings."""
     if isinstance(stats_dict, dict):
+        new_dict = {}
         for key, value in stats_dict.items():
+            # Convert keys to strings if they are not already
+            new_key = str(key) if not isinstance(key, str) else key
+
             if isinstance(value, dict):
-                # Recursively convert nested dictionaries
-                stats_dict[key] = convert_dict_dtypes(value)
-            elif isinstance(stats_dict, (tuple, list)):
-                # If the object is a tuple or list, convert all items to string
-                stats_dict[key] = [str(item) for item in stats_dict]
+                # Recursively handle nested dictionaries
+                new_dict[new_key] = convert_dict_dtypes(value)
+            elif isinstance(value, (tuple, list)):
+                # Convert each element to string if it's a tuple or list
+                new_dict[new_key] = [str(item) for item in value]
             else:
                 # Convert the value to a string
-                stats_dict[key] = str(value)
+                new_dict[new_key] = str(value)
+        return new_dict
     else:
-        return "Not a Dictionary"
-
-    return stats_dict
+        return str(stats_dict)  # Handle non-dict cases
 
 
 def allowed_file(filename):
@@ -90,6 +93,7 @@ def process_file():
         ct = convert_dict_dtypes(dstats.central_tendency())
         var = convert_dict_dtypes(dstats.variability())
         dist = convert_dict_dtypes(dstats.distribution())
+        rel = convert_dict_dtypes(dstats.relationships_mvar())
         # print(dstats.central_tendency())
         # print(dstats.variability())
         # print(dstats.distribution())
@@ -98,7 +102,7 @@ def process_file():
         #     table=summary,
         #     cleaned_table=cleaned_df.head().to_html(classes="table table-striped"),
         # )
-        return jsonify(ct, var, dist)
+        return jsonify(ct, var, dist, rel)
 
     except Exception as e:
         return f"An error occurred: {str(e)}", 500

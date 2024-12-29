@@ -108,6 +108,47 @@ class descriptive_stats:
             )
         return distr_metric
 
+    def shapeNspread(self):
+        # Measures of shape & spread: Min/Max,5-numsum(min,q1,median,q3,max)
+        shapenspread = self.data.describe()
+        return shapenspread
+
+    def relationships_mvar(self):
+        # Measures of Relationship : Corr Coeff, CoV,CrossTab
+        # Correlation Coefficient (Pearson,Spearman,kendall)
+        relationships = {"Correlation_coeff": {}, "Covariance": {}, "Crosstab": {}}
+        for col1 in self.data.select_dtypes(include="number").columns:
+            for col2 in self.data.select_dtypes(include="number").columns:
+                if col1 != col2:
+                    relationships["Correlation_coeff"][(col1, col2)] = {
+                        "Pearson": self.data[col1].corr(
+                            self.data[col2], method="pearson"
+                        ),
+                        "Spearman": self.data[col1].corr(
+                            self.data[col2], method="spearman"
+                        ),
+                        "Kendall": self.data[col1].corr(
+                            self.data[col2], method="kendall"
+                        ),
+                    }
+
+        # Covariance
+        for col1 in self.data.select_dtypes(include="number").columns:
+            for col2 in self.data.select_dtypes(include="number").columns:
+                if col1 != col2:
+                    relationships["Covariance"][(col1, col2)] = self.data[col1].cov(
+                        self.data[col2]
+                    )
+
+        # Cross Tabulation (for categorical features only)
+        for col1 in self.data.select_dtypes(include="object").columns:
+            for col2 in self.data.select_dtypes(include="object").columns:
+                if col1 != col2:
+                    relationships["Crosstab"][(col1, col2)] = pd.crosstab(
+                        self.data[col1], self.data[col2]
+                    )
+        return relationships
+
 
 def summarize(df, output_format="html"):
     if output_format == "html":
