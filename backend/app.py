@@ -15,7 +15,11 @@ app.config["ALLOWED_EXTENSIONS"] = {"csv"}
 
 def convert_dict_dtypes(stats_dict):
     """Convert all keys and values in the dictionary to strings."""
-    if isinstance(stats_dict, dict):
+    if isinstance(stats_dict, pd.DataFrame):
+        # Convert DataFrame to a JSON-compatible dictionary & call a recursive func to make it string
+        return convert_dict_dtypes(stats_dict.to_dict("dict"))
+        # Converting rows into list of dicts
+    elif isinstance(stats_dict, dict):
         new_dict = {}
         for key, value in stats_dict.items():
             # Convert keys to strings if they are not already
@@ -96,6 +100,7 @@ def process_file():
         shapeNspread = convert_dict_dtypes(dstats.shapeNspread())
         rel = convert_dict_dtypes(dstats.relationships_mvar())
         freq_stats = convert_dict_dtypes(dstats.freq_analysis())
+        dataset_description = convert_dict_dtypes(dstats.dataset_desc())
         # print(dstats.central_tendency())
         # print(dstats.variability())
         # print(dstats.distribution())
@@ -104,7 +109,9 @@ def process_file():
         #     table=summary,
         #     cleaned_table=cleaned_df.head().to_html(classes="table table-striped"),
         # )
-        return jsonify(ct, var, dist, shapeNspread, rel, freq_stats)
+        return jsonify(
+            ct, var, dist, shapeNspread, rel, freq_stats, dataset_description
+        )
 
     except Exception as e:
         return f"An error occurred: {str(e)}", 500

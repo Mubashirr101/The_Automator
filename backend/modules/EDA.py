@@ -71,6 +71,14 @@ class descriptive_stats:
         for i in self.data.select_dtypes(include="number").columns:
             distr_metric["Skewness"][i] = self.data[i].skew()
             distr_metric["Kurtosis"][i] = self.data[i].kurtosis()
+            distr_metric["Quantiles"][i] = (
+                self.data[i].quantile([0.25, 0.5, 0.75]).tolist()
+            )
+            distr_metric["Deciles"][i] = (
+                self.data[i]
+                .quantile([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1])
+                .tolist()
+            )
 
         # check for positively/negatively/zero skewed
         for i in distr_metric["Skewness"].keys():
@@ -93,19 +101,6 @@ class descriptive_stats:
             else:
                 distr_metric["Heavy_Light_Tail"][i] = 0  # Normal Tails
 
-        # Quantiles
-        for i in self.data.select_dtypes(include="number").columns:
-            distr_metric["Quantiles"][i] = (
-                self.data[i].quantile([0.25, 0.5, 0.75]).tolist()
-            )
-
-        # Deciles
-        for i in self.data.select_dtypes(include="number").columns:
-            distr_metric["Deciles"][i] = (
-                self.data[i]
-                .quantile([0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1])
-                .tolist()
-            )
         return distr_metric
 
     def shapeNspread(self):
@@ -115,7 +110,7 @@ class descriptive_stats:
 
     def relationships_mvar(self):
         # Measures of Relationship : Corr Coeff, CoV,CrossTab
-        # Correlation Coefficient (Pearson,Spearman,kendall)
+        # Correlation Coefficient (Pearson,Spearman,kendall) & Covariance & Cross Tabulation (for categorical features only)
         relationships = {"Correlation_coeff": {}, "Covariance": {}, "Crosstab": {}}
         for col1 in self.data.select_dtypes(include="number").columns:
             for col2 in self.data.select_dtypes(include="number").columns:
@@ -131,19 +126,9 @@ class descriptive_stats:
                             self.data[col2], method="kendall"
                         ),
                     }
-
-        # Covariance
-        for col1 in self.data.select_dtypes(include="number").columns:
-            for col2 in self.data.select_dtypes(include="number").columns:
-                if col1 != col2:
                     relationships["Covariance"][(col1, col2)] = self.data[col1].cov(
                         self.data[col2]
                     )
-
-        # Cross Tabulation (for categorical features only)
-        for col1 in self.data.select_dtypes(include="object").columns:
-            for col2 in self.data.select_dtypes(include="object").columns:
-                if col1 != col2:
                     relationships["Crosstab"][(col1, col2)] = pd.crosstab(
                         self.data[col1], self.data[col2]
                     )
@@ -154,11 +139,9 @@ class descriptive_stats:
         freq_stats = {"Counts": {}, "proportions": {}, "cumulative_freq": {}}
 
         # Counts: Frequency of each category/value data | hehe meoww! :3
-        for col in self.data.select_dtypes(exclude="number").columns:
-            freq_stats["Counts"][col] = self.data[col].value_counts().to_dict()
-
         # Proportions/percentages : The relative freq of categorical data
         for col in self.data.select_dtypes(exclude="number").columns:
+            freq_stats["Counts"][col] = self.data[col].value_counts().to_dict()
             freq_stats["proportions"][col] = (
                 self.data[col].value_counts(normalize=True) * 100
             ).to_dict()
@@ -169,6 +152,28 @@ class descriptive_stats:
             freq_stats["cumulative_freq"][col] = sorted_data.cumsum().to_dict()
 
         return freq_stats
+
+    def dataset_desc(self):
+        ds_desc = {
+            "dimensions": {},
+            "datatypes": {},
+            "missing_values": {},
+            "unique_values": {},
+            "duplicate_values": {},
+        }
+        # Dimensions
+
+        ds_desc["dimensions"]["Rows"] = self.data.shape[0]
+        ds_desc["dimensions"]["Cols"] = self.data.shape[1]
+
+        # Datatypes, Missing Values,Unique Values & Duplicate Values
+        for col in self.data.columns:
+            ds_desc["datatypes"][col] = self.data[col].dtype
+            ds_desc["missing_values"][col] = self.data[col].isna().sum()
+            ds_desc["unique_values"][col] = self.data[col].nunique()
+            ds_desc["duplicate_values"][col] = self.data[col].duplicated().sum()
+
+        return ds_desc
 
 
 def summarize(df, output_format="html"):
