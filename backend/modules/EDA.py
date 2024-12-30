@@ -149,6 +149,27 @@ class descriptive_stats:
                     )
         return relationships
 
+    def freq_analysis(self):
+        # Frequency Analysis: Counts,Proportions/percentages,CF
+        freq_stats = {"Counts": {}, "proportions": {}, "cumulative_freq": {}}
+
+        # Counts: Frequency of each category/value data | hehe meoww! :3
+        for col in self.data.select_dtypes(exclude="number").columns:
+            freq_stats["Counts"][col] = self.data[col].value_counts().to_dict()
+
+        # Proportions/percentages : The relative freq of categorical data
+        for col in self.data.select_dtypes(exclude="number").columns:
+            freq_stats["proportions"][col] = (
+                self.data[col].value_counts(normalize=True) * 100
+            ).to_dict()
+
+        # Cumulative Frequency
+        for col in self.data.select_dtypes(include="number").columns:
+            sorted_data = self.data[col].value_counts().sort_index()
+            freq_stats["cumulative_freq"][col] = sorted_data.cumsum().to_dict()
+
+        return freq_stats
+
 
 def summarize(df, output_format="html"):
     if output_format == "html":

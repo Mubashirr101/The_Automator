@@ -93,7 +93,9 @@ def process_file():
         ct = convert_dict_dtypes(dstats.central_tendency())
         var = convert_dict_dtypes(dstats.variability())
         dist = convert_dict_dtypes(dstats.distribution())
+        shapeNspread = convert_dict_dtypes(dstats.shapeNspread())
         rel = convert_dict_dtypes(dstats.relationships_mvar())
+        freq_stats = convert_dict_dtypes(dstats.freq_analysis())
         # print(dstats.central_tendency())
         # print(dstats.variability())
         # print(dstats.distribution())
@@ -102,7 +104,7 @@ def process_file():
         #     table=summary,
         #     cleaned_table=cleaned_df.head().to_html(classes="table table-striped"),
         # )
-        return jsonify(ct, var, dist, rel)
+        return jsonify(ct, var, dist, shapeNspread, rel, freq_stats)
 
     except Exception as e:
         return f"An error occurred: {str(e)}", 500
