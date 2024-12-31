@@ -1,7 +1,7 @@
 # **The Automator**
 
 ## 🚀 Automating the Entire Analysis Workflow  
-*(Probably the most ambitious project I've ever planned lol 😂)*
+*(Probably the most ambitious project I've ever planned XD!!)*
 
 ---
 
