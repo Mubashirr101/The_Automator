@@ -21,7 +21,7 @@ The Automator is designed to simplify data analysis by automating the entire wor
 
 ### **Why This Project?**  
 As a Computer Science Grad and current Data science PostGrad, I wanted to create something that combines my existing knowledge of Python Programming , SQL, Software dev in general, while exploring new tools like Flask, APIs, and frontend frameworks. 
-The Automator is the culmination of this learning journey where I'll be getting my hands deep into DS/ML concepts and practical applying them here.
+The Automator is the culmination of this learning journey where I'll be getting my hands deep into DS/ML concepts and practically applying them here.
 
 ---
 
