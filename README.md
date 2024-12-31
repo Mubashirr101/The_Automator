@@ -29,9 +29,8 @@ The Automator is the culmination of this learning journey where I'll be getting 
 - **Code Prototyping**: Jupyter (Colab)
 - **Backend**: Python, Flask  
 - **Frontend**: (To be decided – potentially React/Angular or even streamlit)  
-- **Data Handling**: Pandas, NumPy  
+- **Data Handling**: Pandas, NumPy, etc ( All the libraries used are listed in the requirements.txt)
 - **Visualization**: Matplotlib, Seaborn (and possibly Plotly in the future)  
-- **Version Control**: Git & GitHub  
 
 ---
 
@@ -61,3 +60,5 @@ The Automator is the culmination of this learning journey where I'll be getting 
 I plan to scale The Automator to include features like real-time data analysis, interactive dashboards, and support for multiple file formats. The ultimate goal is to make data analysis accessible to everyone, regardless of their technical expertise.
 
 ---
+
+**NOTE:** This is project is in-development and the above mentioned features are being added gradually.
