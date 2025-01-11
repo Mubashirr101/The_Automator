@@ -1,5 +1,8 @@
 # Types of data viz
 import matplotlib.pyplot as plt
+import seaborn as sns
+import missingno as msno
+import plotly.express as px
 
 
 class vizualize:
@@ -42,39 +45,67 @@ class vizualize:
 
     # Data Distribution
 
-    def densityplots():
+    def densityplots(self, col):
         # density plots
-        pass
+        col.plot.density(color="green")
+        plt.xlabel(col.name)
+        plt.ylabel("density")
+        plt.title(f"Density plot of {col.name}")
+        plt.show()
 
-    def violinplots():
+    def violinplots(self, col):
         # violin plots
-        pass
+        plt.violinplot(col)
+        plt.xlabel(col.name)
+        plt.ylabel("values")
+        plt.title(f"Violin plot of {col.name}")
+        plt.show()
 
-    def ridgeplots():
+    def ridgeplots(self, col):
         # ridge plots
+        # for categorical data features
         pass
 
     # missing data vizualizations
-    def heatmaps():
-        # heatmaps
-        pass
+    def heatmaps_na(self, df):
+        # heatmaps for missing data
+        missing_corr = df.isna().corr()
 
-    def missingness_matrix():
+        sns.heatmap(missing_corr, annot=True, cmap="coolwarm", cbar=True)
+        plt.xlabel("columns")
+        plt.ylabel("rows")
+        plt.title("Correlation of missing data")
+        plt.show()
+
+    def missingness_matrix(self, df):
         # missingness matrix
-        pass
+        msno.matrix(df)
+        plt.title("Missingness Matrix")
+        plt.show()
 
-    def barplots_na():
+    def barplots_na(self, df):
         # barplots for na counts
-        pass
+        missing_counts = df.isna().sum()
+        missing_counts.plot(kind="bar", color="skyblue", edgecolor="black")
+        plt.title("Missing Values per column")
+        plt.xlabel("columns")
+        plt.ylabel("missing values count")
+        plt.xticks(rotation=0)
+        plt.show()
 
     # vizualization for relationships
-    def scatterplt():
+    def scatterplt(self, col1, col2):
         # scatter plots
-        pass
+        plt.scatter(col1, col2)
+        plt.xlabel(col1.name)
+        plt.ylabel(col2.name)
+        plt.title(f"Scatter plot of {col1.name} vs {col2.name}")
+        plt.show()
 
-    def bubblechrts():
+    def bubblechrts(self, col1, col2, col3):
         # bubble charts
-        pass
+        fig = px.scatter(x=col1, y=col2, size=col3)
+        fig.show()
 
     def pairplots():
         # pair plots
@@ -94,7 +125,7 @@ class vizualize:
         pass
 
     # multivariate distribution vizualization
-    def heatmaps():
+    def heatmaps_mul():
         # heatmaps
         pass
 
