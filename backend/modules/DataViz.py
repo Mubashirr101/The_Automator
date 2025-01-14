@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import missingno as msno
 import plotly.express as px
+import pandas as pd
 
 
 class vizualize:
@@ -235,7 +236,7 @@ class vizualize:
         plt.xlabel(col1.name, fontsize=12)
         plt.show()
 
-    def outlier_scatterplots(self, col1):
+    def outlier_scatterplots(self, df, col1):
         # scatter plots
         plt.figure(figsize=(8, 6))
         plt.scatter(df.index, col1, color="blue", alpha=0.7)
