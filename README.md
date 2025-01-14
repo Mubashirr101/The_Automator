@@ -26,11 +26,10 @@ The Automator is the culmination of this learning journey where I'll be getting 
 ---
 
 ### **Tech Stack**  
-- **Code Prototyping**: Jupyter (Colab)
 - **Backend**: Python, Flask  
 - **Frontend**: (To be decided – potentially React/Angular or even streamlit)  
 - **Data Handling**: Pandas, NumPy, etc ( All the libraries used are listed in the requirements.txt)
-- **Visualization**: Matplotlib, Seaborn (and possibly Plotly in the future)  
+- **Visualization**: Matplotlib, Seaborn, Plotly, etc
 
 ---
 
