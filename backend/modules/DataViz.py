@@ -4,6 +4,9 @@ import seaborn as sns
 import missingno as msno
 import plotly.express as px
 import pandas as pd
+import numpy as np
+import folium
+from folium.plugins import HeatMap
 
 
 class vizualize:
@@ -288,9 +291,17 @@ class vizualize:
         plt.show()
 
     # geographic data vizualization
-    def choropleth_mps():
+    def choropleth_mps(
+        self, df, map_geometrics, data_label, geometrics_label, plottedfeature
+    ):
         # choropleth maps
-        pass
+        geo_df = map_geometrics.merge(
+            df, left_on=geometrics_label, right_on=data_label, how="left"
+        )
+        fig, ax = plt.subplots(1, 1, figsize=(10, 6))
+        geo_df.plot(column=plottedfeature, cmap="OrRd", legend=True, ax=ax)
+        plt.title(f"Choropleth Map: {plottedfeature} by {data_label}", fontsize=16)
+        plt.show()
 
     def bubble_mps():
         # bubble maps
