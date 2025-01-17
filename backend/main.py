@@ -17,16 +17,25 @@ class AutomatorApp:
         if csv_file is not None:
             # Read and display the uploaded CSV
             df = pd.read_csv(csv_file)
-            st.dataframe(df)
-
-            # Create a copy of the uncleaned dataset
-            uncleaned_df = df.copy()
-            # Data Cleaning (placeholder for cleaning logic)
+            with st.expander("View Data"):
+                st.dataframe(df)
+            # temporarily cleaning the df
             cleaned_df = clean(df)
-            # Data description
-            self.data_description(cleaned_df)
-        else:
-            st.warning("Please upload a CSV file to proceed.")
+
+            # Multiple Tabs for Data Analysis
+            tab1, tab2 = st.tabs(["Data Description", "Data Vizualization"])
+
+            with tab1:
+                self.data_description(cleaned_df)
+
+            # # Create a copy of the uncleaned dataset
+            # uncleaned_df = df.copy()
+            # # Data Cleaning (placeholder for cleaning logic)
+            # cleaned_df = clean(df)
+            # # Data description
+            # self.data_description(cleaned_df)
+        # else:
+        #     st.warning("Please upload a CSV file to proceed.")
 
     def data_description(self, df):
 
@@ -35,62 +44,123 @@ class AutomatorApp:
         # creating an instance for the desc module
         d_stats = descriptive_stats()
 
-        # Central tendency
-        ct = self.convert_dict_dtypes(d_stats.central_tendency(df))
-        st.write("Central Tendency Metrics:")
-        ct_Data = pd.DataFrame(ct)
-        pre_processed_ct_Data = self.preprocess_dataframe(ct_Data)
-        # print(pre_processed_ct_Data)
-        st.dataframe(pre_processed_ct_Data)
+        # Selection panels
+        with st.container(key="desc_stat_selection_panel", border=True):
+            ds_type_opt = st.selectbox(
+                "Type",
+                (
+                    "Central Tendency",
+                    "Variability",
+                    "Data Distribution",
+                    "Shape & Spread",
+                    "Multivariate Relationships",
+                    "Frequency Analysis",
+                    "Dataset Description",
+                ),
+            )
+            dsm_options = []
+            if ds_type_opt == "Central Tendency":
+                dsm_options.append("All")
+                dsm_options.append("Mean")
+                dsm_options.append("Median")
+                dsm_options.append("Mode")
+            elif ds_type_opt == "Variability":
+                dsm_options.append("All")
+                dsm_options.append("Range")
+                dsm_options.append("Variance")
+                dsm_options.append("Standard Deviation")
+                dsm_options.append("Inter Quartile Range")
+                dsm_options.append("Mean Absolute Deviation")
+                dsm_options.append("Coefficient of Variance")
+            elif ds_type_opt == "Data Distribution":
+                dsm_options.append("All")
+                dsm_options.append("Skewness")
+                dsm_options.append("Kurtosis")
+                dsm_options.append("Positive or Negative Skewness")
+                dsm_options.append("Heavy or Light tailed")
+                dsm_options.append("Quantiles")
+                dsm_options.append("Deciles")
+            elif ds_type_opt == "Shape & Spread":
+                dsm_options.append("Shape and Spread")
+            elif ds_type_opt == "Multivariate Relationships":
+                dsm_options.append("All")
+                dsm_options.append("Correlation Coefficient")
+                dsm_options.append("Covariance")
+                dsm_options.append("Crosstab")
+            elif ds_type_opt == "Frequency Analysis":
+                dsm_options.append("All")
+                dsm_options.append("Counts")
+                dsm_options.append("Proportions")
+                dsm_options.append("Cumulative Frequency")
+            elif ds_type_opt == "Dataset Description":
+                dsm_options.append("All")
+                dsm_options.append("Dimensions")
+                dsm_options.append("Datatypes")
+                dsm_options.append("Missing Values")
+                dsm_options.append("Unique Values")
+                dsm_options.append("Duplicate Values")
+            else:
+                dsm_options.append("choose a type")
 
-        # variability metric
-        var = self.convert_dict_dtypes(d_stats.variability(df))
-        st.write("Variability Metrics:")
-        var_Data = pd.DataFrame(var)
-        pre_processed_var_Data = self.preprocess_dataframe(var_Data)
-        # print(pre_processed_var_Data)
-        st.dataframe(pre_processed_var_Data)
+            ds_metric = st.selectbox("Metric", dsm_options)
+            submit_button = st.button("Submit")
 
-        # Distribution Metric
-        dist = self.convert_dict_dtypes(d_stats.distribution(df))
-        st.write("Distribution Metrics:")
-        dist_Data = pd.DataFrame(dist)
-        pre_processed_dist_Data = self.preprocess_dataframe(dist_Data)
-        # print(pre_processed_dist_Data)
-        st.dataframe(pre_processed_dist_Data)
+        # # Central tendency
+        # ct = self.convert_dict_dtypes(d_stats.central_tendency(df))
+        # st.write("Central Tendency Metrics:")
+        # ct_Data = pd.DataFrame(ct)
+        # pre_processed_ct_Data = self.preprocess_dataframe(ct_Data)
+        # # print(pre_processed_ct_Data)
+        # st.dataframe(pre_processed_ct_Data)
 
-        # Shape and Spread
-        shapeNspread = self.convert_dict_dtypes(d_stats.shapeNspread(df))
-        st.write("Shape & Spread:")
-        sns_Data = pd.DataFrame(shapeNspread)
-        pre_processed_sns_Data = self.preprocess_dataframe(sns_Data)
-        # print(pre_processed_sns_Data)
-        st.dataframe(pre_processed_sns_Data)
+        # # variability metric
+        # var = self.convert_dict_dtypes(d_stats.variability(df))
+        # st.write("Variability Metrics:")
+        # var_Data = pd.DataFrame(var)
+        # pre_processed_var_Data = self.preprocess_dataframe(var_Data)
+        # # print(pre_processed_var_Data)
+        # st.dataframe(pre_processed_var_Data)
 
-        # Multivariate Relationships Metric
-        rel = self.convert_dict_dtypes(d_stats.relationships_mvar(df))
-        st.write("Multivariate Relationships Metric:")
-        rel_Data = pd.DataFrame(rel)
-        pre_processed_rel_Data = self.preprocess_dataframe(rel_Data)
-        # print(pre_processed_rel_Data)
-        st.dataframe(pre_processed_rel_Data)
+        # # Distribution Metric
+        # dist = self.convert_dict_dtypes(d_stats.distribution(df))
+        # st.write("Distribution Metrics:")
+        # dist_Data = pd.DataFrame(dist)
+        # pre_processed_dist_Data = self.preprocess_dataframe(dist_Data)
+        # # print(pre_processed_dist_Data)
+        # st.dataframe(pre_processed_dist_Data)
 
-        # frequency analysis
-        freq_stats = self.convert_dict_dtypes(d_stats.freq_analysis(df))
-        st.write("Frequency Analysis Metrics:")
-        fs_Data = pd.DataFrame(freq_stats)
-        pre_processed_fs_Data = self.preprocess_dataframe(fs_Data)
-        # print(pre_processed_fs_Data)
-        st.dataframe(pre_processed_fs_Data)
+        # # Shape and Spread
+        # shapeNspread = self.convert_dict_dtypes(d_stats.shapeNspread(df))
+        # st.write("Shape & Spread:")
+        # sns_Data = pd.DataFrame(shapeNspread)
+        # pre_processed_sns_Data = self.preprocess_dataframe(sns_Data)
+        # # print(pre_processed_sns_Data)
+        # st.dataframe(pre_processed_sns_Data)
 
-        # Describing the dataset
-        dataset_description = self.convert_dict_dtypes(d_stats.dataset_desc(df))
-        st.write("Dataset Description Metrics:")
-        dd_Data = pd.DataFrame(dataset_description)
-        pre_processed_dd_Data = self.preprocess_dataframe(dd_Data)
-        # print(pre_processed_dd_Data)
-        st.dataframe(pre_processed_dd_Data)
-        # haha dd ..more like P.Diddy XD!!
+        # # Multivariate Relationships Metric
+        # rel = self.convert_dict_dtypes(d_stats.relationships_mvar(df))
+        # st.write("Multivariate Relationships Metric:")
+        # rel_Data = pd.DataFrame(rel)
+        # pre_processed_rel_Data = self.preprocess_dataframe(rel_Data)
+        # # print(pre_processed_rel_Data)
+        # st.dataframe(pre_processed_rel_Data)
+
+        # # frequency analysis
+        # freq_stats = self.convert_dict_dtypes(d_stats.freq_analysis(df))
+        # st.write("Frequency Analysis Metrics:")
+        # fs_Data = pd.DataFrame(freq_stats)
+        # pre_processed_fs_Data = self.preprocess_dataframe(fs_Data)
+        # # print(pre_processed_fs_Data)
+        # st.dataframe(pre_processed_fs_Data)
+
+        # # Describing the dataset
+        # dataset_description = self.convert_dict_dtypes(d_stats.dataset_desc(df))
+        # st.write("Dataset Description Metrics:")
+        # dd_Data = pd.DataFrame(dataset_description)
+        # pre_processed_dd_Data = self.preprocess_dataframe(dd_Data)
+        # # print(pre_processed_dd_Data)
+        # st.dataframe(pre_processed_dd_Data)
+        # # haha dd ..more like P.Diddy XD!!
 
     def convert_dict_dtypes(self, stats_dict):
         """Convert all keys and values in the dictionary to strings."""

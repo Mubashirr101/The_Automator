@@ -35,6 +35,7 @@ st.text(buffer.getvalue())
 
 # Display dictionary as JSON
 st.json(data)
+
 # Example dictionary
 data = {"name": ["John", "Jane"], "age": [25, 30], "skills": ["Python", "SQL"]}
 
