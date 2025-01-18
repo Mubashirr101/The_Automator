@@ -19,19 +19,17 @@ class AutomatorApp:
             df = pd.read_csv(csv_file)
             with st.expander("View Data"):
                 st.dataframe(df)
-            # temporarily cleaning the df
-            cleaned_df = clean(df)
+            # Create a copy of the uncleaned dataset
+            self.uncleaned_df = df.copy()
+            # Data Cleaning (placeholder for cleaning logic)
+            self.cleaned_df = clean(df)
 
             # Multiple Tabs for Data Analysis
             tab1, tab2 = st.tabs(["Data Description", "Data Vizualization"])
 
             with tab1:
-                self.data_description(cleaned_df)
+                self.data_description(self.cleaned_df)
 
-            # # Create a copy of the uncleaned dataset
-            # uncleaned_df = df.copy()
-            # # Data Cleaning (placeholder for cleaning logic)
-            # cleaned_df = clean(df)
             # # Data description
             # self.data_description(cleaned_df)
         # else:
@@ -46,7 +44,8 @@ class AutomatorApp:
 
         # Selection panels
         with st.container(key="desc_stat_selection_panel", border=True):
-            ds_type_opt = st.selectbox(
+            col1, col2 = st.columns(2)
+            ds_type_opt = col1.selectbox(
                 "Type",
                 (
                     "Central Tendency",
@@ -102,16 +101,46 @@ class AutomatorApp:
             else:
                 dsm_options.append("choose a type")
 
-            ds_metric = st.selectbox("Metric", dsm_options)
-            submit_button = st.button("Submit")
+            ds_metric = col1.selectbox("Metric", dsm_options)
 
-        # # Central tendency
-        # ct = self.convert_dict_dtypes(d_stats.central_tendency(df))
-        # st.write("Central Tendency Metrics:")
-        # ct_Data = pd.DataFrame(ct)
-        # pre_processed_ct_Data = self.preprocess_dataframe(ct_Data)
-        # # print(pre_processed_ct_Data)
-        # st.dataframe(pre_processed_ct_Data)
+            dataset_choice = col2.segmented_control(
+                "Dataset", options=("Cleaned", "Uncleaned")
+            )
+
+            ds_cols_options = []
+            if dataset_choice == "Cleaned":
+                ds_cols_options = self.cleaned_df.columns.tolist()
+                ds_cols_options.insert(0, "All")
+
+            elif dataset_choice == "Uncleaned":
+                ds_cols_options = self.uncleaned_df.columns.tolist()
+                ds_cols_options.insert(0, "All")
+
+            ds_cols = col2.selectbox("Columns", ds_cols_options)
+            ds_submit = st.button("Submit")
+
+        if ds_submit:
+            st.write(ds_type_opt, ds_metric, dataset_choice, ds_cols)
+            if ds_type_opt == "Central Tendency":
+                # Central tendency
+                ct = self.convert_dict_dtypes(d_stats.central_tendency(df))
+                st.write("Central Tendency Metrics:")
+                ct_Data = pd.DataFrame(ct)
+                pre_processed_ct_Data = self.preprocess_dataframe(ct_Data)
+                # print(pre_processed_ct_Data)
+                st.dataframe(pre_processed_ct_Data)
+            elif ds_type_opt == "Variability":
+                pass
+            elif ds_type_opt == "Data Distribution":
+                pass
+            elif ds_type_opt == "Shape & Spread":
+                pass
+            elif ds_type_opt == "Multivariate Relationships":
+                pass
+            elif ds_type_opt == "Frequency Analysis":
+                pass
+            elif ds_type_opt == "Dataset Description":
+                pass
 
         # # variability metric
         # var = self.convert_dict_dtypes(d_stats.variability(df))
@@ -161,6 +190,9 @@ class AutomatorApp:
         # # print(pre_processed_dd_Data)
         # st.dataframe(pre_processed_dd_Data)
         # # haha dd ..more like P.Diddy XD!!
+
+    def return_dd(self, type, metric, dataset, col):
+        st.write(type, metric, dataset, col)
 
     def convert_dict_dtypes(self, stats_dict):
         """Convert all keys and values in the dictionary to strings."""
