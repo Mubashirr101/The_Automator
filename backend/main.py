@@ -121,6 +121,7 @@ class AutomatorApp:
 
         if ds_submit:
             st.write(ds_type_opt, ds_metric, dataset_choice, ds_cols)
+
             if ds_type_opt == "Central Tendency":
                 # Central tendency
                 ct = self.convert_dict_dtypes(d_stats.central_tendency(df))
@@ -129,70 +130,64 @@ class AutomatorApp:
                 pre_processed_ct_Data = self.preprocess_dataframe(ct_Data)
                 # print(pre_processed_ct_Data)
                 st.dataframe(pre_processed_ct_Data)
+
             elif ds_type_opt == "Variability":
-                pass
+                # variability metric
+                var = self.convert_dict_dtypes(d_stats.variability(df))
+                st.write("Variability Metrics:")
+                var_Data = pd.DataFrame(var)
+                pre_processed_var_Data = self.preprocess_dataframe(var_Data)
+                # print(pre_processed_var_Data)
+                st.dataframe(pre_processed_var_Data)
+
             elif ds_type_opt == "Data Distribution":
-                pass
+                # Distribution Metric
+                dist = self.convert_dict_dtypes(d_stats.distribution(df))
+                st.write("Distribution Metrics:")
+                dist_Data = pd.DataFrame(dist)
+                pre_processed_dist_Data = self.preprocess_dataframe(dist_Data)
+                # print(pre_processed_dist_Data)
+                st.dataframe(pre_processed_dist_Data)
+
             elif ds_type_opt == "Shape & Spread":
-                pass
+                # Shape and Spread
+                shapeNspread = self.convert_dict_dtypes(d_stats.shapeNspread(df))
+                st.write("Shape & Spread:")
+                sns_Data = pd.DataFrame(shapeNspread)
+                pre_processed_sns_Data = self.preprocess_dataframe(sns_Data)
+                # print(pre_processed_sns_Data)
+                st.dataframe(pre_processed_sns_Data)
+
             elif ds_type_opt == "Multivariate Relationships":
-                pass
+
+                # Multivariate Relationships Metric
+                rel = self.convert_dict_dtypes(d_stats.relationships_mvar(df))
+                st.write("Multivariate Relationships Metric:")
+                rel_Data = pd.DataFrame(rel)
+                pre_processed_rel_Data = self.preprocess_dataframe(rel_Data)
+                # print(pre_processed_rel_Data)
+                st.dataframe(pre_processed_rel_Data)
+
             elif ds_type_opt == "Frequency Analysis":
-                pass
+
+                # frequency analysis
+                freq_stats = self.convert_dict_dtypes(d_stats.freq_analysis(df))
+                st.write("Frequency Analysis Metrics:")
+                fs_Data = pd.DataFrame(freq_stats)
+                pre_processed_fs_Data = self.preprocess_dataframe(fs_Data)
+                # print(pre_processed_fs_Data)
+                st.dataframe(pre_processed_fs_Data)
+
             elif ds_type_opt == "Dataset Description":
-                pass
 
-        # # variability metric
-        # var = self.convert_dict_dtypes(d_stats.variability(df))
-        # st.write("Variability Metrics:")
-        # var_Data = pd.DataFrame(var)
-        # pre_processed_var_Data = self.preprocess_dataframe(var_Data)
-        # # print(pre_processed_var_Data)
-        # st.dataframe(pre_processed_var_Data)
-
-        # # Distribution Metric
-        # dist = self.convert_dict_dtypes(d_stats.distribution(df))
-        # st.write("Distribution Metrics:")
-        # dist_Data = pd.DataFrame(dist)
-        # pre_processed_dist_Data = self.preprocess_dataframe(dist_Data)
-        # # print(pre_processed_dist_Data)
-        # st.dataframe(pre_processed_dist_Data)
-
-        # # Shape and Spread
-        # shapeNspread = self.convert_dict_dtypes(d_stats.shapeNspread(df))
-        # st.write("Shape & Spread:")
-        # sns_Data = pd.DataFrame(shapeNspread)
-        # pre_processed_sns_Data = self.preprocess_dataframe(sns_Data)
-        # # print(pre_processed_sns_Data)
-        # st.dataframe(pre_processed_sns_Data)
-
-        # # Multivariate Relationships Metric
-        # rel = self.convert_dict_dtypes(d_stats.relationships_mvar(df))
-        # st.write("Multivariate Relationships Metric:")
-        # rel_Data = pd.DataFrame(rel)
-        # pre_processed_rel_Data = self.preprocess_dataframe(rel_Data)
-        # # print(pre_processed_rel_Data)
-        # st.dataframe(pre_processed_rel_Data)
-
-        # # frequency analysis
-        # freq_stats = self.convert_dict_dtypes(d_stats.freq_analysis(df))
-        # st.write("Frequency Analysis Metrics:")
-        # fs_Data = pd.DataFrame(freq_stats)
-        # pre_processed_fs_Data = self.preprocess_dataframe(fs_Data)
-        # # print(pre_processed_fs_Data)
-        # st.dataframe(pre_processed_fs_Data)
-
-        # # Describing the dataset
-        # dataset_description = self.convert_dict_dtypes(d_stats.dataset_desc(df))
-        # st.write("Dataset Description Metrics:")
-        # dd_Data = pd.DataFrame(dataset_description)
-        # pre_processed_dd_Data = self.preprocess_dataframe(dd_Data)
-        # # print(pre_processed_dd_Data)
-        # st.dataframe(pre_processed_dd_Data)
-        # # haha dd ..more like P.Diddy XD!!
-
-    def return_dd(self, type, metric, dataset, col):
-        st.write(type, metric, dataset, col)
+                # Describing the dataset
+                dataset_description = self.convert_dict_dtypes(d_stats.dataset_desc(df))
+                st.write("Dataset Description Metrics:")
+                dd_Data = pd.DataFrame(dataset_description)
+                pre_processed_dd_Data = self.preprocess_dataframe(dd_Data)
+                # print(pre_processed_dd_Data)
+                st.dataframe(pre_processed_dd_Data)
+                # haha dd ..more like P.Diddy XD!!
 
     def convert_dict_dtypes(self, stats_dict):
         """Convert all keys and values in the dictionary to strings."""
