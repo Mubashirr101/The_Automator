@@ -41,19 +41,23 @@ class descriptive_stats:
             "Range": {},
             "Variance": {},
             "Standard Deviation": {},
-            "IQR": {},
+            "Inter Quartile Range": {},
             "Mean Absolute Deviation": {},
-            "Coeff. of Variance": {},
+            "Coefficient of Variance": {},
         }
         for i in df.select_dtypes(include="number").columns:
             var_stats["Range"][i] = df[i].max() - df[i].min()  # range
             var_stats["Variance"][i] = df[i].var()  # variance
             var_stats["Standard Deviation"][i] = df[i].std()  # SD
-            var_stats["IQR"][i] = df[i].quantile(0.75) - df[i].quantile(0.25)  # IQR
+            var_stats["Inter Quartile Range"][i] = df[i].quantile(0.75) - df[
+                i
+            ].quantile(
+                0.25
+            )  # IQR
             var_stats["Mean Absolute Deviation"][i] = abs(
                 df[i] - df[i].mean()
             ).mean()  # MAD
-            var_stats["Coeff. of Variance"][i] = df[i].std() / df[i].mean()  # CV
+            var_stats["Coefficient of Variance"][i] = df[i].std() / df[i].mean()  # CV
 
         return var_stats
 
@@ -63,8 +67,8 @@ class descriptive_stats:
         distr_metric = {
             "Skewness": {},
             "Kurtosis": {},
-            "Pos_Neg_Skew": {},
-            "Heavy_Light_Tail": {},
+            "Positive/Negative Skewness": {},
+            "Heavy/Light Tail": {},
             "Quantiles": {},
             "Deciles": {},
         }
@@ -81,11 +85,11 @@ class descriptive_stats:
         # check for positively/negatively/zero skewed
         for i in distr_metric["Skewness"].keys():
             if distr_metric["Skewness"][i] > 0:
-                distr_metric["Pos_Neg_Skew"][i] = 1
+                distr_metric["Positive/Negative Skewness"][i] = "Positive"
             elif distr_metric["Skewness"][i] < 0:
-                distr_metric["Pos_Neg_Skew"][i] = 2
+                distr_metric["Positive/Negative Skewness"][i] = "Negative"
             else:
-                distr_metric["Pos_Neg_Skew"][i] = 0
+                distr_metric["Positive/Negative Skewness"][i] = "Zero"
 
         # Heavy/Light tails classification
         # 1 = Heavy Tails (Leptokurtic)
@@ -93,11 +97,17 @@ class descriptive_stats:
         # -1 = Light Tails (Platykurtic)
         for i in distr_metric["Kurtosis"].keys():
             if distr_metric["Kurtosis"][i] > 3:
-                distr_metric["Heavy_Light_Tail"][i] = 1  # Heavy Tails
+                distr_metric["Heavy/Light Tail"][
+                    i
+                ] = "Heavy Tailed (Leptokurtic)"  # Heavy Tails
             elif distr_metric["Kurtosis"][i] < 3:
-                distr_metric["Heavy_Light_Tail"][i] = -1  # Light Tails
+                distr_metric["Heavy/Light Tail"][
+                    i
+                ] = "Light Tailed (Platykurtic)"  # Light Tails
             else:
-                distr_metric["Heavy_Light_Tail"][i] = 0  # Normal Tails
+                distr_metric["Heavy/Light Tail"][
+                    i
+                ] = "Normal Tailed (Mesokurtic)"  # Normal Tails
 
         return distr_metric
 
