@@ -16,26 +16,28 @@ class AutomatorApp:
         # Process the uploaded file
         if csv_file is not None:
             # Read and display the uploaded CSV
-            self.df = pd.read_csv(csv_file)
+            self.data = pd.read_csv(csv_file)
             with st.expander("View Data"):
-                st.dataframe(self.df)
-            # Create a copy of the uncleaned dataset
-            # self.uncleaned_df = df.copy()
-            # # Data Cleaning (placeholder for cleaning logic)
-            # self.cleaned_df = clean(df)
+                st.dataframe(self.data)
+            # button for cleaning the data
+            clean_button = st.button("Clean")
+            self.uncleaned_df = self.data.copy()
+            self.cleaned_df = pd.DataFrame()
+            if clean_button:
+                self.cleaned_df = clean(self.uncleaned_df)
+                with st.expander("View Cleaned Data"):
+                    st.dataframe(self.cleaned_df)
 
             # Multiple Tabs for Data Analysis
             tab1, tab2 = st.tabs(["Data Description", "Data Vizualization"])
 
             with tab1:
-                self.data_description(self.df)
+                self.data_description(self.cleaned_df,self.uncleaned_df)
 
-            # # Data description
-            # self.data_description(cleaned_df)
-        # else:
-        #     st.warning("Please upload a CSV file to proceed.")
+        else:
+            st.warning("Please upload a CSV file to proceed.")
 
-    def data_description(self, df):
+    def data_description(self, cleaned_df,unclean_df):
 
         # adding modules for different stat metrics
         st.subheader("Data Description")
@@ -111,13 +113,11 @@ class AutomatorApp:
             if ds_type_opt == "Shape & Spread":
                 pass
             else:
-                if dataset_choice == "Cleaned":
-                    self.cleaned_df = clean(df)
+                if dataset_choice == "Cleaned":                    
                     ds_cols_options = self.cleaned_df.columns.tolist()
                     ds_cols_options.insert(0, "All")
 
                 elif dataset_choice == "Uncleaned":
-                    self.uncleaned_df = df.copy()
                     ds_cols_options = self.uncleaned_df.columns.tolist()
                     ds_cols_options.insert(0, "All")
 
@@ -127,6 +127,11 @@ class AutomatorApp:
 
         if ds_submit:
             st.write(ds_type_opt, ds_metric, dataset_choice, ds_cols)
+
+            if dataset_choice == "Cleaned":
+                df = self.cleaned_df.copy()
+            elif dataset_choice == "Uncleaned":
+                df = self.uncleaned_df.copy()
 
             if ds_type_opt == "Central Tendency":
                 # Central tendency
