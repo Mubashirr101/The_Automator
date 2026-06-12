@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request, render_template
-import pandas import pd
+import pandas as pd
 
 app = Flask(__name__)
 
