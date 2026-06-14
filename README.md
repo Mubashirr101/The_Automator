@@ -8,6 +8,7 @@
 ### **Project Overview**  
 The Automator is designed to simplify data analysis by automating the entire workflow. From data ingestion and cleaning to building models, making predictions, generating visualizations, and summarizing results, this project aims to handle it all with minimal user intervention.
 
+Live at -> [automator.mubashirshaikh.com](https://automator.mubashirshaikh.com/)
 ---
 
 ### **Key Features**  
